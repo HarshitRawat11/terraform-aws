@@ -14,11 +14,11 @@ resource "aws_vpc" "custom_vpc" {
 }
 
 resource "aws_subnet" "public_subnet" {
-  count                   = length(var.public_cidrs)
+  count                   = var.public_sn_count
   vpc_id                  = aws_vpc.custom_vpc.id
   cidr_block              = var.public_cidrs[count.index]
   map_public_ip_on_launch = true
-  availability_zone       = ["us-west-2a", "us-west-2b", "us-west-2c", "us-west-2d"][count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
 
   tags = {
     Name = "custom-public-${count.index + 1}"
@@ -26,13 +26,15 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_subnet" "private_subnet" {
-  count                   = length(var.public_cidrs)
+  count                   = var.private_sn_count
   vpc_id                  = aws_vpc.custom_vpc.id
   cidr_block              = var.private_cidrs[count.index]
   map_public_ip_on_launch = false
-  availability_zone       = ["us-west-2a", "us-west-2b", "us-west-2c", "us-west-2d"][count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
 
   tags = {
     Name = "custom-private-${count.index + 1}"
   }
 }
+
+data "aws_availability_zones" "available" {}

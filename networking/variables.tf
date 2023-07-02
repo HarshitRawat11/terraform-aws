@@ -12,3 +12,13 @@ variable "private_cidrs" {
   type        = list(string)
   description = "private subnet cidr blocks"
 }
+
+variable "public_sn_count" {
+  type        = number
+  description = "count of public subnets"
+}
+
+variable "private_sn_count" {
+  type        = number
+  description = "count of private subnets"
+}
