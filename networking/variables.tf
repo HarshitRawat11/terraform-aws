@@ -27,3 +27,8 @@ variable "max_subnet" {
   type        = number
   description = "maximum number of subnets"
 }
+
+variable "access_ip" {
+  type = string
+
+}

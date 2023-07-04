@@ -8,6 +8,8 @@ resource "random_shuffle" "az_list" {
   result_count = var.max_subnet
 }
 
+data "aws_availability_zones" "available" {}
+
 resource "aws_vpc" "custom_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -15,6 +17,10 @@ resource "aws_vpc" "custom_vpc" {
 
   tags = {
     Name = "custom-vpc-${random_integer.random.id}"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -79,4 +85,21 @@ resource "aws_default_route_table" "private_rt" {
   }
 }
 
-data "aws_availability_zones" "available" {}
+resource "aws_security_group" "custom_sg" {
+  name        = "public_sg"
+  description = "security group for public access"
+  vpc_id      = aws_vpc.custom_vpc.id
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.access_ip]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
