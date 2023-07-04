@@ -22,3 +22,8 @@ variable "private_sn_count" {
   type        = number
   description = "count of private subnets"
 }
+
+variable "max_subnet" {
+  type        = number
+  description = "maximum number of subnets"
+}

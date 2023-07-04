@@ -3,6 +3,11 @@ resource "random_integer" "random" {
   max = 10
 }
 
+resource "random_shuffle" "az_list" {
+  input        = data.aws_availability_zones.available.names
+  result_count = var.max_subnet
+}
+
 resource "aws_vpc" "custom_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -25,6 +30,13 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
+resource "aws_route_table_association" "public_assoc" {
+  count          = var.public_sn_count
+  subnet_id      = aws_subnet.public_subnet.*.id[count.index]
+  route_table_id = aws_route_table.public_rt.id
+
+}
+
 resource "aws_subnet" "private_subnet" {
   count                   = var.private_sn_count
   vpc_id                  = aws_vpc.custom_vpc.id
@@ -34,6 +46,36 @@ resource "aws_subnet" "private_subnet" {
 
   tags = {
     Name = "custom-private-${count.index + 1}"
+  }
+}
+
+resource "aws_internet_gateway" "custom_igw" {
+  vpc_id = aws_vpc.custom_vpc.id
+
+  tags = {
+    Name = "custom_igw"
+  }
+}
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.custom_vpc.id
+
+  tags = {
+    Name = "public_rt"
+  }
+}
+
+resource "aws_route" "default_route" {
+  route_table_id         = aws_route_table.public_rt.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.custom_igw.id
+}
+
+resource "aws_default_route_table" "private_rt" {
+  default_route_table_id = aws_vpc.custom_vpc.default_route_table_id
+
+  tags = {
+    Name = "private_rt"
   }
 }
 
