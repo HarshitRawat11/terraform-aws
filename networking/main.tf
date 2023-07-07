@@ -89,11 +89,16 @@ resource "aws_security_group" "custom_sg" {
   name        = "public_sg"
   description = "security group for public access"
   vpc_id      = aws_vpc.custom_vpc.id
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.access_ip]
+  for_each    = var.security_groups
+
+  dynamic "ingress" {
+    for_each = each.value.ingress
+    content {
+      from_port   = ingress.value.from
+      to_port     = ingress.value.to
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
   }
 
   egress {
@@ -101,5 +106,15 @@ resource "aws_security_group" "custom_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  count      = var.db_subnet_group == true ? 1 : 0
+  name       = "rds_subnet_group"
+  subnet_ids = aws_subnet.private_subnet.*.id
+
+  tags = {
+    Name = "rds_sng"
   }
 }

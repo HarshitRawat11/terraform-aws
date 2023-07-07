@@ -29,6 +29,15 @@ variable "max_subnet" {
 }
 
 variable "access_ip" {
-  type = string
+  type        = string
+  description = "value"
+}
 
+variable "security_groups" {
+  description = "security groups"
+}
+
+variable "db_subnet_group" {
+  type        = bool
+  description = "rds database subnet group"
 }
