@@ -1,3 +1,5 @@
+# --- root/locals.tf ---
+
 locals {
   vpc_cidr = "10.123.0.0/16"
 }
@@ -20,7 +22,13 @@ locals {
           protocol    = "http"
           cidr_blocks = ["0.0.0.0/0"]
         }
-        rds = {
+      }
+    }
+    rds = {
+      name        = "rds_sg"
+      description = "rds access"
+      ingress = {
+        mysql = {
           from        = 3306
           to          = 3306
           protocol    = "tcp"

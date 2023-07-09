@@ -1,3 +1,5 @@
+# --- root/main.tf ---
+
 module "networking" {
   source           = "./networking"
   vpc_cidr         = local.vpc_cidr
@@ -12,15 +14,21 @@ module "networking" {
 }
 
 module "database" {
-  source               = "./database"
-  db_storage           = 10
-  db_engine_version    = "5.7.22"
-  db_instance_class    = "db.t2.micro"
-  dbname               = var.dbname
-  dbuser               = var.dbuser
-  dbpassword           = var.dbpassword
-  db_identifier        = "rds-db"
-  skip_db_snapshot     = true
-  db_subnet_group_name = module.networking.db_subnet_group_name[0]
-  # vpc_security_group_ids = module.networking.db_security_group_ids
+  source                 = "./database"
+  db_storage             = 10
+  db_engine_version      = "5.7.22"
+  db_instance_class      = "db.t2.micro"
+  dbname                 = var.dbname
+  dbuser                 = var.dbuser
+  dbpassword             = var.dbpassword
+  db_identifier          = "rds-db"
+  skip_db_snapshot       = true
+  db_subnet_group_name   = module.networking.db_subnet_group_name[0]
+  vpc_security_group_ids = module.networking.db_security_group_ids
+}
+
+module "loadbalancing" {
+  source         = "./loadbalancing"
+  public_sg      = module.networking.public_sg
+  public_subnets = module.networking.public_subnets
 }

@@ -1,3 +1,5 @@
+# --- networking/main.tf ---
+
 resource "random_integer" "random" {
   min = 1
   max = 10

@@ -1,3 +1,5 @@
+# --- root/variables.tf ---
+
 variable "ACCESS_KEY" {
   type        = string
   description = "access key of iam user"
@@ -34,5 +36,4 @@ variable "dbpassword" {
   type        = string
   description = "password of the db"
   sensitive   = true
-
 }
