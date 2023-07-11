@@ -88,10 +88,10 @@ resource "aws_default_route_table" "private_rt" {
 }
 
 resource "aws_security_group" "custom_sg" {
-  name        = "public_sg"
-  description = "security group for public access"
-  vpc_id      = aws_vpc.custom_vpc.id
   for_each    = var.security_groups
+  name        = each.value.name
+  description = each.value.description
+  vpc_id      = aws_vpc.custom_vpc.id
 
   dynamic "ingress" {
     for_each = each.value.ingress

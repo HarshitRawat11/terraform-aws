@@ -9,7 +9,7 @@ output "db_subnet_group_name" {
 }
 
 output "db_security_group_ids" {
-  value = [aws_security_group.custom_sg["rds"].id]
+  value = aws_security_group.custom_sg["rds"].id
 }
 
 output "public_sg" {

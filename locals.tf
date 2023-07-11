@@ -19,14 +19,14 @@ locals {
         http = {
           from        = 80
           to          = 80
-          protocol    = "http"
+          protocol    = "tcp"
           cidr_blocks = ["0.0.0.0/0"]
         }
       }
     }
     rds = {
       name        = "rds_sg"
-      description = "rds access"
+      description = "security group for rds access"
       ingress = {
         mysql = {
           from        = 3306

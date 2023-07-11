@@ -12,7 +12,7 @@ variable "SECRET_KEY" {
 
 variable "aws_region" {
   type        = string
-  default     = "us-west-2"
+  default     = "eu-north-1"
   description = "aws region"
 }
 

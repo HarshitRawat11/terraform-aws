@@ -1,6 +1,6 @@
 # --- database/main.tf ---
 
-resource "aws_db_instance" "default" {
+resource "aws_db_instance" "custom_rds_db" {
   allocated_storage      = var.db_storage
   engine                 = "mysql"
   engine_version         = var.db_engine_version

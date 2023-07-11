@@ -13,6 +13,10 @@ data "aws_ami" "server_ami" {
 resource "random_id" "custom_node_id" {
   byte_length = 2
   count       = var.instance_count
+
+  keepers = {
+    key_name = var.key_name
+  }
 }
 
 resource "aws_key_pair" "custom_auth" {
@@ -28,7 +32,15 @@ resource "aws_instance" "custom_node" {
   vpc_security_group_ids = [var.public_sg]
   subnet_id              = var.public_subnets[count.index]
   key_name               = aws_key_pair.custom_auth.id
-  # user_data = ""
+  user_data = templatefile(var.user_data_path,
+    {
+      nodename    = "node-${random_id.custom_node_id[count.index].dec}"
+      db_endpoint = var.db_endpoint
+      dbname      = var.dbname
+      dbuser      = var.dbuser
+      dbpassword  = var.dbpassword
+    }
+  )
 
   root_block_device {
     volume_size = var.vol_size

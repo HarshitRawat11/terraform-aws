@@ -16,15 +16,15 @@ module "networking" {
 module "database" {
   source                 = "./database"
   db_storage             = 10
-  db_engine_version      = "5.7.22"
-  db_instance_class      = "db.t2.micro"
+  db_engine_version      = "5.7"
+  db_instance_class      = "db.t3.micro"
   dbname                 = var.dbname
   dbuser                 = var.dbuser
   dbpassword             = var.dbpassword
   db_identifier          = "rds-db"
   skip_db_snapshot       = true
   db_subnet_group_name   = module.networking.db_subnet_group_name[0]
-  vpc_security_group_ids = module.networking.db_security_group_ids
+  vpc_security_group_ids = [module.networking.db_security_group_ids]
 }
 
 module "loadbalancing" {
@@ -51,5 +51,9 @@ module "compute" {
   vol_size        = 10
   key_name        = "terra-key"
   public_key_path = "~/.ssh/terra-key.pub"
-
+  user_data_path  = "${path.root}/userdata.tpl"
+  db_endpoint     = module.database.db_endpoint
+  dbname          = var.dbname
+  dbuser          = var.dbuser
+  dbpassword      = var.dbpassword
 }
