@@ -49,4 +49,11 @@ resource "aws_instance" "custom_node" {
   tags = {
     Name = "node-${random_id.custom_node_id[count.index].dec}"
   }
-} 
+}
+
+resource "aws_lb_target_group_attachment" "tg_attach" {
+  count            = var.instance_count
+  target_group_arn = var.lb_target_group_arn
+  target_id        = aws_instance.custom_node[count.index].id
+  port             = var.tg_port
+}

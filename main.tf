@@ -43,17 +43,19 @@ module "loadbalancing" {
 }
 
 module "compute" {
-  source          = "./compute"
-  instance_count  = 1
-  instance_type   = "t3.micro"
-  public_sg       = module.networking.public_sg
-  public_subnets  = module.networking.public_subnets
-  vol_size        = 10
-  key_name        = "terra-key"
-  public_key_path = "~/.ssh/terra-key.pub"
-  user_data_path  = "${path.root}/userdata.tpl"
-  db_endpoint     = module.database.db_endpoint
-  dbname          = var.dbname
-  dbuser          = var.dbuser
-  dbpassword      = var.dbpassword
+  source              = "./compute"
+  instance_count      = 1
+  instance_type       = "t3.micro"
+  public_sg           = module.networking.public_sg
+  public_subnets      = module.networking.public_subnets
+  vol_size            = 10
+  key_name            = "terra-key"
+  public_key_path     = "~/.ssh/terra-key.pub"
+  user_data_path      = "${path.root}/userdata.tpl"
+  db_endpoint         = module.database.db_endpoint
+  dbname              = var.dbname
+  dbuser              = var.dbuser
+  dbpassword          = var.dbpassword
+  lb_target_group_arn = module.loadbalancing.lb_target_group_arn
+  tg_port             = 8000
 }
