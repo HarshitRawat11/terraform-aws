@@ -56,6 +56,16 @@ resource "aws_instance" "custom_node" {
     )
   }
 
+  provisioner "remote-exec" {
+    connection {
+      type = "ssh"
+      user = "91931"
+      host = self.public_ip
+      private_key = file("~/.ssh/terra-key")
+    }
+    script = "${path.cwd}/delay.sh"
+  }
+
   tags = {
     Name = "node-${random_id.custom_node_id[count.index].dec}"
   }

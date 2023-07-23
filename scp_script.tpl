@@ -1,4 +1,3 @@
-sleep 60
 scp -i ~/.ssh/terra-key \
 -o StrictHostKeyChecking=no \
 -o UserKnownHostsFile=/dev/null \
