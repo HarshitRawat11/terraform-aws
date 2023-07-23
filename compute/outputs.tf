@@ -5,6 +5,6 @@ output "instances" {
   sensitive = true
 }
 
-output "instance_port" {
+output "tg_port" {
   value = aws_lb_target_group_attachment.tg_attach[0].port
 }

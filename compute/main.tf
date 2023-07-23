@@ -46,6 +46,16 @@ resource "aws_instance" "custom_node" {
     volume_size = var.vol_size
   }
 
+  provisioner "local-exec" {
+    command = templatefile("${path.cwd}/scp_script.tpl",
+      {
+        nodeip   = self.public_ip
+        k3s_path = "${path.cwd}/../"
+        nodename = self.tags.Name
+      }
+    )
+  }
+
   tags = {
     Name = "node-${random_id.custom_node_id[count.index].dec}"
   }
