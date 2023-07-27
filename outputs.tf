@@ -8,3 +8,8 @@ output "instance" {
   value     = { for i in module.compute.instances : i.tags.Name => "${i.public_ip} : ${module.compute.tg_port}" }
   sensitive = true
 }
+
+output "kubeconfig" {
+  value     = [for i in module.compute.instances : "export KUBECONFIG=../k3s-${i.tags.Name}.yaml"]
+  sensitive = true
+}

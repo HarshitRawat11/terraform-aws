@@ -14,3 +14,4 @@ variable "dbpassword" {}
 variable "dbname" {}
 variable "lb_target_group_arn" {}
 variable "tg_port" {}
+variable "private_key_path" {}

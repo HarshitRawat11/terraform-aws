@@ -31,7 +31,7 @@ module "loadbalancing" {
   source                 = "./loadbalancing"
   public_sg              = module.networking.public_sg
   public_subnets         = module.networking.public_subnets
-  tg_port                = 80
+  tg_port                = 8000
   tg_protocol            = "HTTP"
   vpc_id                 = module.networking.vpc_id
   lb_healthy_threshold   = 2
@@ -51,11 +51,12 @@ module "compute" {
   vol_size            = 10
   key_name            = "terra-key"
   public_key_path     = "~/.ssh/terra-key.pub"
-  user_data_path      = "${path.root}/userdata.tpl"
+  user_data_path      = "${path.root}/scripts/userdata.tpl"
   db_endpoint         = module.database.db_endpoint
   dbname              = var.dbname
   dbuser              = var.dbuser
   dbpassword          = var.dbpassword
   lb_target_group_arn = module.loadbalancing.lb_target_group_arn
   tg_port             = 8000
+  private_key_path    = "~/.ssh/terra-key"
 }
