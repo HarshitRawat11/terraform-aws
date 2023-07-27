@@ -46,31 +46,31 @@ resource "aws_instance" "custom_node" {
     volume_size = var.vol_size
   }
 
-  provisioner "remote-exec" {
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      host        = self.public_ip
-      private_key = file(var.private_key_path)
-    }
-    script = "${path.cwd}/scripts/delay.sh"
-  }
+  # provisioner "remote-exec" {
+  #   connection {
+  #     type        = "ssh"
+  #     user        = "ubuntu"
+  #     host        = self.public_ip
+  #     private_key = file(var.private_key_path)
+  #   }
+  #   script = "${path.cwd}/scripts/delay.sh"
+  # }
 
-  provisioner "local-exec" {
-    command = templatefile("${path.cwd}/scripts/scp_script.tpl",
-      {
-        nodeip           = self.public_ip
-        k3s_path         = "${path.cwd}/.."
-        nodename         = self.tags.Name
-        private_key_path = var.private_key_path
-      }
-    )
-  }
+  # provisioner "local-exec" {
+  #   command = templatefile("${path.cwd}/scripts/scp_script.tpl",
+  #     {
+  #       nodeip           = self.public_ip
+  #       k3s_path         = "${path.cwd}/.."
+  #       nodename         = self.tags.Name
+  #       private_key_path = var.private_key_path
+  #     }
+  #   )
+  # }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "rm -f ${path.cwd}/../k3s-${self.tags.Name}.yaml"
-  }
+  # provisioner "local-exec" {
+  #   when    = destroy
+  #   command = "rm -f ${path.cwd}/../k3s-${self.tags.Name}.yaml"
+  # }
 
   tags = {
     Name = "node-${random_id.custom_node_id[count.index].dec}"
